@@ -1,0 +1,45 @@
+name: 'Monthly-Action'
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '10 3 * * *'
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ github.repository }}
+
+    - name: update_content
+      run: |
+        date_y=`date "+%Y-%m-%d %H:%M:%S"`
+        month_y=`date "+%m"`
+        if [ "${month_y}" == "12" ]; then
+          echo "${date_y}" > monthly.txt
+        else
+          echo "${date_y}" >> monthly.txt
+        fi
+    - name: exec_code
+      run: |
+        date_y=`date "+%Y-%m-%d %H:%M:%S"`
+        # python sign_login.py
+      env: 
+        LIK_AI_USERNAME: ${{ secrets.LIK_AI_USERNAME }}
+        LIK_AI_PWD: ${{ secrets.LIK_AI_PWD }}
+    - name: code_push
+      run: |
+        git config --local user.name github-actions[bot]
+        git config --local user.email github-actions[bot]@users.noreply.github.com
+        git status
+        date_y=`date "+%Y-%m-%d %H:%M:%S"`
+        git add monthly.txt
+        git commit -m "Monthly update ${date_y}"
+        git log
+        git push origin
