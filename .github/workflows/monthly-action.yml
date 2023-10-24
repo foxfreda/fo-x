@@ -29,10 +29,15 @@ jobs:
     - name: exec_code
       run: |
         date_y=`date "+%Y-%m-%d %H:%M:%S"`
-        # python sign_login.py
+        python sign_login.py
       env: 
         LIK_AI_USERNAME: ${{ secrets.LIK_AI_USERNAME }}
         LIK_AI_PWD: ${{ secrets.LIK_AI_PWD }}
+        LIK_AI_HOST: ${{ secrets.LIK_AI_HOST }}
+        LIK_AI_SIGN_IN_HOST: ${{ secrets.LIK_AI_SIGN_IN_HOST }}
+        LIK_AI_LOGIN_HOST: ${{ secrets.LIK_AI_LOGIN_HOST }}
+        LIK_AI_BALANCE_HOST: ${{ secrets.LIK_AI_BALANCE_HOST }}
+
     - name: code_push
       run: |
         git config --local user.name github-actions[bot]
@@ -43,3 +48,4 @@ jobs:
         git commit -m "Monthly update ${date_y}"
         git log
         git push origin
+
